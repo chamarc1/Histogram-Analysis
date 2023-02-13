@@ -20,10 +20,7 @@ def print_greeting():
     :return: None
     """
     # print greeting
-    print("Greetings!\nThis python program allows a user to enter and validate their phone number"
-          "and zipcode+4. Then the user will enter values of two, 3x3 matrices and then select from"
-          "options including, addition, subtraction, matrix multiplication, and element by element"
-          "multiplication.\n...")
+    print("Greetings!\nThis python program.\n...")
 
 
 def print_closing():
@@ -67,8 +64,8 @@ def file_menu():
     file_menu(): prints file menu
     :return: None
     """
-    print("Select the file you want to analyze:\n1. Population Data\n2. Housing Data\n3. Exit the\
-        Program")
+    print("Select the file you want to analyze:\n1. Population Data\n2. Housing Data\n3. Exit the"\
+        " Program")
 
 
 def analysis_menu(column_tuple):
@@ -123,45 +120,27 @@ def get_column(file_name, column_name):
     return column_array
 
 
-def population_data():
+def get_data_array(file_name, column_name_tuple):
     """
-    population_data(): populates a multidimensional array to hold population data from csv file
-    :return: None
+    get_data_array(file_name, column_name_tuple):accesses the file by the file name given, then
+        populates a np array of values in the column given to be returned
+    :param file_name: name of the csv file
+    :param column_name_tuple: names of each column to be accessed
     """
-    # get column data for Pop Apr 1 and add it to the data array
-    data_array = np.vstack([get_column('PopChange.csv', 'Pop Apr 1')])
-    
-    # get column data for Pop Jul 1 and add it to the data array
-    data_array = np.vstack([data_array, get_column('PopChange.csv', 'Pop Jul 1')])
+    # initialize counter for first element
+    count = 0
 
-    # get column data for Change Pop and add it to the data array
-    data_array = np.vstack([data_array, get_column('PopChange.csv', 'Change Pop')])
-    
-    # print data array
-    print(data_array)
+    # for loop to iterate through tuple
+    for column_name in column_name_tuple:
+        # if data array is empty data array equals column data then add it to the data array
+        if count == 0:
+            data_array = get_column(file_name, column_name)
+            count += 1
+        # else
+        else:
+            # get column data for name given
+            data_array = np.vstack([data_array, get_column(file_name, column_name)])
 
-
-def housing_data():
-    """
-    housing_data(): populates a multidimensional array to hold housing data from csv file
-    :return: None
-    """
-    # get colum data for AGE and add it to the data array
-    data_array = np.vstack([get_column('Housing.csv', 'AGE')])
-
-    # get colum data for BEDRMS and add it to the data array
-    data_array = np.vstack([data_array, get_column('Housing.csv', 'BEDRMS')])
-
-    # get colum data for BUILT and add it to the data array
-    data_array = np.vstack([data_array, get_column('Housing.csv', 'BUILT')])
-
-    # get colum data for ROOMS and add it to the data array
-    data_array = np.vstack([data_array, get_column('Housing.csv', 'ROOMS')])
-
-    # get colum data for UTILITY and add it to the data array
-    data_array = np.vstack([data_array, get_column('Housing.csv', 'UTILITY')])
-
-    # print data array
     print(data_array)
 
 
@@ -181,11 +160,11 @@ def run_application():
         # if 1 print You have entered Population Data. then run Population Data
         case '1':
             print("You have entered Population Data.")
-            population_data()
+            get_data_array("PopChange.csv", ("Pop Apr 1", "Pop Jul 1", "Change Pop"))
         # if 2 then run Housing Data
         case '2':
             print("You have entered Housing Data.")
-            housing_data()
+            get_data_array("Housing.csv", ("AGE", "BEDRMS", "BUILT", "ROOMS", "UTILITY"))
         # if 3 then return None
         case '3':
             print("You have entered Exit.")
