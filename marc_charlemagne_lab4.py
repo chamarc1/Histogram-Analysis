@@ -11,6 +11,7 @@ addition, subtraction, matrix multiplication, and element by element multiplicat
 # imports
 import re
 import numpy as np
+import csv
 
 
 def print_greeting():
@@ -94,6 +95,76 @@ def analysis_menu(column_tuple):
     menu += f"\n{ascii_value} Exit Column"
 
 
+def get_column(file_name, column_name):
+    """
+    get_column(file_name, column_name): accesses the file by the file name given, then
+        populates a np array of values in the column given to be returned
+    :param file_name: string
+    :param column_name: string
+    :return: numpy array
+    """
+    # initialize numpy array
+    column_array = np.array([])
+
+    # open csv file
+    with open(file_name, 'r') as file:
+        # create csv object
+        reader = csv.reader(file)
+
+        # find the index of column_name
+        header = next(reader)
+        column_index = header.index(column_name)
+
+        for row in reader:
+            # append value to np array
+            column_array = np.append(column_array, row[column_index])
+
+    # return column array
+    return column_array
+
+
+def population_data():
+    """
+    population_data(): populates a multidimensional array to hold population data from csv file
+    :return: None
+    """
+    # get column data for Pop Apr 1 and add it to the data array
+    data_array = np.vstack([get_column('PopChange.csv', 'Pop Apr 1')])
+    
+    # get column data for Pop Jul 1 and add it to the data array
+    data_array = np.vstack([data_array, get_column('PopChange.csv', 'Pop Jul 1')])
+
+    # get column data for Change Pop and add it to the data array
+    data_array = np.vstack([data_array, get_column('PopChange.csv', 'Change Pop')])
+    
+    # print data array
+    print(data_array)
+
+
+def housing_data():
+    """
+    housing_data(): populates a multidimensional array to hold housing data from csv file
+    :return: None
+    """
+    # get colum data for AGE and add it to the data array
+    data_array = np.vstack([get_column('Housing.csv', 'AGE')])
+
+    # get colum data for BEDRMS and add it to the data array
+    data_array = np.vstack([data_array, get_column('Housing.csv', 'BEDRMS')])
+
+    # get colum data for BUILT and add it to the data array
+    data_array = np.vstack([data_array, get_column('Housing.csv', 'BUILT')])
+
+    # get colum data for ROOMS and add it to the data array
+    data_array = np.vstack([data_array, get_column('Housing.csv', 'ROOMS')])
+
+    # get colum data for UTILITY and add it to the data array
+    data_array = np.vstack([data_array, get_column('Housing.csv', 'UTILITY')])
+
+    # print data array
+    print(data_array)
+
+
 def run_application():
     """
     print_menu(): print menu to console
@@ -110,9 +181,11 @@ def run_application():
         # if 1 print You have entered Population Data. then run Population Data
         case '1':
             print("You have entered Population Data.")
+            population_data()
         # if 2 then run Housing Data
         case '2':
             print("You have entered Housing Data.")
+            housing_data()
         # if 3 then return None
         case '3':
             print("You have entered Exit.")
