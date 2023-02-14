@@ -65,14 +65,14 @@ def file_menu():
     :return: None
     """
     print("Select the file you want to analyze:\n1. Population Data\n2. Housing Data\n3. Exit the"\
-        " Program")
+        " Program\n")
 
 
 def analysis_menu(column_tuple):
     """
     analysis_menu(): prints the population file menu
     :param column_tuple: tuple
-    :return: None
+    :return letter_dictionary: dictionary
     """
     # initilaize menu string
     menu = "Select the Column you want to analyze:"
@@ -80,16 +80,28 @@ def analysis_menu(column_tuple):
     # start value of ascii value of a
     ascii_value = ord('a')
 
+    # create dictionary letter=key column_name=value
+    letter_dictionary = {}
+
     # for loop to go through the strings in the column tuple
     for column in column_tuple:
         # add asii_value and column string to menu string
         menu += f"\n{chr(ascii_value)}. {column}"
 
+        # add new key/value pair to dictionary
+        letter_dictionary[str(chr(ascii_value)).upper()] = column
+
         # increment ascii_value by one
         ascii_value += 1
     
     # add the exit column to menu string
-    menu += f"\n{ascii_value} Exit Column"
+    menu += f"\n{chr(ascii_value)} Exit Column"
+
+    # print menu
+    print(f"{menu}\n")
+
+    # return dictionary
+    return letter_dictionary
 
 
 def get_column(file_name, column_name):
@@ -120,28 +132,48 @@ def get_column(file_name, column_name):
     return column_array
 
 
-def get_data_array(file_name, column_name_tuple):
+def get_dictionary(file_name, column_name_tuple):
     """
-    get_data_array(file_name, column_name_tuple):accesses the file by the file name given, then
-        populates a np array of values in the column given to be returned
-    :param file_name: name of the csv file
-    :param column_name_tuple: names of each column to be accessed
+    get_dictionary(file_name, column_name_tuple): creates dictionary of column names as keys and
+        column data arryays as values
+    :param file_name: name of csv file
+    :param column_name_tuple: tuple of column names
     """
-    # initialize counter for first element
-    count = 0
+    # initialize dictionary
+    data_dict = {}
 
     # for loop to iterate through tuple
     for column_name in column_name_tuple:
-        # if data array is empty data array equals column data then add it to the data array
-        if count == 0:
-            data_array = get_column(file_name, column_name)
-            count += 1
-        # else
-        else:
-            # get column data for name given
-            data_array = np.vstack([data_array, get_column(file_name, column_name)])
+        # add to dictionary key=column_name value=get_column
+        data_dict[column_name] = get_column(file_name, column_name)
 
-    print(data_array)
+    # return dictionary
+    return data_dict
+
+
+def analyze_data(file_name, column_name_tuple):
+    """
+    analyze_data(filen_name, column_name_tuple): function that creates dictionaries based on given
+        file. Then analyzes data based on user prompt
+    """
+    # get dictionary
+    data_dict = get_dictionary(file_name, column_name_tuple)
+
+    # print the analyze menu
+    letter_dictionary = analysis_menu(column_name_tuple)
+
+    # get selection from user
+    column_selection = user_input(('A', 'B', 'C', 'D'))
+
+    # if selection=D return none
+    if column_selection == 'D':
+        return None
+
+    key = letter_dictionary[column_selection]
+    print(key, data_dict[key])
+    
+    # recursive call
+    return analyze_data(file_name, column_name_tuple)
 
 
 def run_application():
@@ -160,11 +192,11 @@ def run_application():
         # if 1 print You have entered Population Data. then run Population Data
         case '1':
             print("You have entered Population Data.")
-            get_data_array("PopChange.csv", ("Pop Apr 1", "Pop Jul 1", "Change Pop"))
+            analyze_data("PopChange.csv", ("Pop Apr 1", "Pop Jul 1", "Change Pop"))
         # if 2 then run Housing Data
         case '2':
             print("You have entered Housing Data.")
-            get_data_array("Housing.csv", ("AGE", "BEDRMS", "BUILT", "ROOMS", "UTILITY"))
+            get_dictionary("Housing.csv", ("AGE", "BEDRMS", "BUILT", "ROOMS", "UTILITY"))
         # if 3 then return None
         case '3':
             print("You have entered Exit.")
