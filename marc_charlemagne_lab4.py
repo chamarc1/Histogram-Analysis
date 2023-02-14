@@ -9,9 +9,9 @@ Then the user will enter values of two, 3x3 matrices and then select from option
 addition, subtraction, matrix multiplication, and element by element multiplication.
 """
 # imports
-import re
-import numpy as np
 import csv
+import numpy as np
+import matplotlib.pyplot as plt
 
 
 def print_greeting():
@@ -93,7 +93,7 @@ def analysis_menu(column_tuple):
 
         # increment ascii_value by one
         ascii_value += 1
-    
+
     # add the exit column to menu string and dictionary
     menu += f"\n{chr(ascii_value)} Exit Column"
     letter_dictionary[str(chr(ascii_value)).upper()] = None
@@ -117,7 +117,7 @@ def get_column(file_name, column_name):
     column_array = np.array([])
 
     # open csv file
-    with open(file_name, 'r') as file:
+    with open(file_name, 'r', encoding="utf-8") as file:
         # create csv object
         reader = csv.reader(file)
 
@@ -127,7 +127,7 @@ def get_column(file_name, column_name):
 
         for row in reader:
             # append value to np array
-            column_array = np.append(column_array, int(row[column_index]))
+            column_array = np.append(column_array, float(row[column_index]))
 
     # return column array
     return column_array
@@ -152,7 +152,22 @@ def get_dictionary(file_name, column_name_tuple):
     return data_dict
 
 
+def display_histogram(data_array):
+    """
+    display_histogram(data_array): display histogram basaed on array
+    :return: none
+    """
+    plt.hist(data_array)
+    plt.show()
+
+
 def calculate_statistics(data_dict, column_name_tuple):
+    """
+    calculate_statistics(data_dict, column_name_tuple): calculate statistics based on column
+    :param data_dict: dictionary of data
+    :column_name_tuple: tuple of column names
+    :return: None or recursive call
+    """
     # print the analyze menu
     letter_dictionary = analysis_menu(column_name_tuple)
 
@@ -160,11 +175,10 @@ def calculate_statistics(data_dict, column_name_tuple):
     column_selection = user_input(tuple(letter_dictionary.keys()))
 
     # if selection=none return none
-    if letter_dictionary[column_selection] == None:
+    if letter_dictionary[column_selection] is None:
         return None
 
     # get array based on selection
-    print(column_selection)
     data_array = data_dict[letter_dictionary[column_selection]]
 
     # calculate and print count
@@ -177,15 +191,19 @@ def calculate_statistics(data_dict, column_name_tuple):
     std_deviation = np.std(data_array)
 
     # calculate Min
-    min = np.min(data_array)
+    min_value = np.min(data_array)
 
     # calculate and Max
-    max = np.max(data_array)
+    max_value = np.max(data_array)
 
     # print statistics
-    print(f"The statistics for this column are:\nCount = {count}\nMean = {mean}\nStandard "\
-        f"Deviation = {std_deviation}\nMin = {min}\nMax = {max}")
-    
+    print(f"You selected {letter_dictionary[column_selection]}\nThe statistics for this"\
+        f"column are:\nCount = {count}\nMean = {mean}\nStandard Deviation = {std_deviation}\n"\
+            f"Min = {min_value}\nMax = {max_value}\nThe Histogram is now displayed.")
+
+    # display histogram
+    display_histogram(data_array)
+
     # recursive call
     return calculate_statistics(data_dict, column_name_tuple)
 
@@ -197,7 +215,7 @@ def analyze_data(file_name, column_name_tuple):
     """
     # get dictionary
     data_dict = get_dictionary(file_name, column_name_tuple)
-    
+
     # calculate statistics
     calculate_statistics(data_dict, column_name_tuple)
 
@@ -227,7 +245,7 @@ def run_application():
         case '3':
             print("You have entered Exit.")
             return None
-    
+
     # recursive call to run application
     return run_application()
 
