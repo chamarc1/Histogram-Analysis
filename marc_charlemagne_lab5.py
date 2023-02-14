@@ -4,9 +4,10 @@ Author: Charlemagne Marc
 File: marc_charlemagne_lab5
 Date: 01/31/2023
 Lab Week 5
-Purpose: Python program that allows a user to enter and validate their phone number and zipcode+4.
-Then the user will enter values of two, 3x3 matrices and then select from options including,
-addition, subtraction, matrix multiplication, and element by element multiplication.
+Purpose: Python program that allows a user to load one of two CSV files and then perform histogram
+analysis and plots for select variables on the datasets. The first dataset represents the
+population change for specific dates for U.S. regions. The second dataset represents Housing data
+over an extended period of time describing home age, number of bedrooms and other variables.
 """
 # imports
 import csv
@@ -20,8 +21,8 @@ def print_greeting():
     :return: None
     """
     # print greeting
-    print("Greetings!\nThis python program.\n...")
-
+    print("Greetings!\nThis python program allows a user to load one of two CSV files and then "\
+        "perform histogram analysis and plots for select variables on the datasets.\n")
 
 def print_closing():
     """
@@ -197,7 +198,7 @@ def calculate_statistics(data_dict, column_name_tuple):
     max_value = np.max(data_array)
 
     # print statistics
-    print(f"You selected {letter_dictionary[column_selection]}\nThe statistics for this"\
+    print(f"You selected {letter_dictionary[column_selection]}\nThe statistics for this "\
         f"column are:\nCount = {count}\nMean = {mean}\nStandard Deviation = {std_deviation}\n"\
             f"Min = {min_value}\nMax = {max_value}\nThe Histogram is now displayed.")
 
