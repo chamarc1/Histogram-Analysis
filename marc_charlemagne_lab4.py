@@ -94,8 +94,9 @@ def analysis_menu(column_tuple):
         # increment ascii_value by one
         ascii_value += 1
     
-    # add the exit column to menu string
+    # add the exit column to menu string and dictionary
     menu += f"\n{chr(ascii_value)} Exit Column"
+    letter_dictionary[str(chr(ascii_value)).upper()] = None
 
     # print menu
     print(f"{menu}\n")
@@ -126,7 +127,7 @@ def get_column(file_name, column_name):
 
         for row in reader:
             # append value to np array
-            column_array = np.append(column_array, row[column_index])
+            column_array = np.append(column_array, int(row[column_index]))
 
     # return column array
     return column_array
@@ -151,6 +152,44 @@ def get_dictionary(file_name, column_name_tuple):
     return data_dict
 
 
+def calculate_statistics(data_dict, column_name_tuple):
+    # print the analyze menu
+    letter_dictionary = analysis_menu(column_name_tuple)
+
+    # get selection from user
+    column_selection = user_input(tuple(letter_dictionary.keys()))
+
+    # if selection=none return none
+    if letter_dictionary[column_selection] == None:
+        return None
+
+    # get array based on selection
+    print(column_selection)
+    data_array = data_dict[letter_dictionary[column_selection]]
+
+    # calculate and print count
+    count = data_array.size
+
+    # calculate mean
+    mean = np.mean(data_array)
+
+    # calculate Standard Deviation
+    std_deviation = np.std(data_array)
+
+    # calculate Min
+    min = np.min(data_array)
+
+    # calculate and Max
+    max = np.max(data_array)
+
+    # print statistics
+    print(f"The statistics for this column are:\nCount = {count}\nMean = {mean}\nStandard "\
+        f"Deviation = {std_deviation}\nMin = {min}\nMax = {max}")
+    
+    # recursive call
+    return calculate_statistics(data_dict, column_name_tuple)
+
+
 def analyze_data(file_name, column_name_tuple):
     """
     analyze_data(filen_name, column_name_tuple): function that creates dictionaries based on given
@@ -158,22 +197,9 @@ def analyze_data(file_name, column_name_tuple):
     """
     # get dictionary
     data_dict = get_dictionary(file_name, column_name_tuple)
-
-    # print the analyze menu
-    letter_dictionary = analysis_menu(column_name_tuple)
-
-    # get selection from user
-    column_selection = user_input(('A', 'B', 'C', 'D'))
-
-    # if selection=D return none
-    if column_selection == 'D':
-        return None
-
-    key = letter_dictionary[column_selection]
-    print(key, data_dict[key])
     
-    # recursive call
-    return analyze_data(file_name, column_name_tuple)
+    # calculate statistics
+    calculate_statistics(data_dict, column_name_tuple)
 
 
 def run_application():
@@ -196,7 +222,7 @@ def run_application():
         # if 2 then run Housing Data
         case '2':
             print("You have entered Housing Data.")
-            get_dictionary("Housing.csv", ("AGE", "BEDRMS", "BUILT", "ROOMS", "UTILITY"))
+            analyze_data("Housing.csv", ("AGE", "BEDRMS", "BUILT", "ROOMS", "UTILITY"))
         # if 3 then return None
         case '3':
             print("You have entered Exit.")
